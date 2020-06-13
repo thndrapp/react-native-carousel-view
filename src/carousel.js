@@ -98,9 +98,6 @@ export default class Carousel extends Component {
     // filter undefined children
     this.children = Children.toArray(children).filter((child) => child);
   }
-  componentWillMount(){
-    this.props.onRef(undefined);
-  }
 
   componentWillReceiveProps(nextProps: Props) {
     this._filterChildren();
@@ -112,7 +109,6 @@ export default class Carousel extends Component {
 
   componentDidMount() {
     this._resetPager();
-    this.props.onRef(this);
   }
 
   indicatorPressed(activePage: number) {
