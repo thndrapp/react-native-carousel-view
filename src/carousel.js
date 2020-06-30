@@ -2,16 +2,12 @@
  * @flow
  */
 
-import React, {Component, Children} from 'react';
-import {
-  Dimensions,
-  Text,
-  View,
-} from 'react-native';
-import reactMixin from 'react-mixin';
-import TimerMixin from 'react-timer-mixin';
-import CarouselPager from './carouselPager';
-import styles from './styles/carousel';
+import React, { Component, Children } from "react";
+import { Dimensions, Text, View } from "react-native";
+import reactMixin from "react-mixin";
+import TimerMixin from "react-timer-mixin";
+import CarouselPager from "./carouselPager";
+import styles from "./styles/carousel";
 
 type Props = {
   hideIndicators: boolean,
@@ -29,33 +25,33 @@ type Props = {
   animate: boolean,
   delay: number,
   loop: boolean,
-  contentContainerStyle?: {[attr: string]: any},
+  contentContainerStyle?: { [attr: string]: any },
   children: any,
   onPageChange?: (number) => void,
   onScrollBegin?: () => void,
   onScroll?: () => void,
-}
+};
 
 export default class Carousel extends Component {
-  props: Props
+  props: Props;
   state: {
-    activePage: number
-  }
-  pager: CarouselPager
-  children: any[]
-  timer: any
-  clearTimeout: any
-  setTimeout: any
+    activePage: number,
+  };
+  pager: CarouselPager;
+  children: any[];
+  timer: any;
+  clearTimeout: any;
+  setTimeout: any;
 
   static defaultProps = {
     hideIndicators: false,
-    indicatorColor: '#000000',
+    indicatorColor: "#000000",
     indicatorSize: 20,
-    inactiveIndicatorColor: '#999999',
+    inactiveIndicatorColor: "#999999",
     indicatorAtBottom: true,
     indicatorOffset: 0,
-    indicatorText: '●',
-    inactiveIndicatorText: '●',
+    indicatorText: "●",
+    inactiveIndicatorText: "●",
     width: null,
     height: 200,
     initialPage: 0,
@@ -64,12 +60,12 @@ export default class Carousel extends Component {
     delay: 1000,
     loop: true,
     onScroll: () => {},
-  }
+  };
 
   constructor(props: Props) {
     super(props);
     if (!props.height) {
-      throw new Error('You must set a height props.');
+      throw new Error("You must set a height props.");
     }
 
     this.state = {
@@ -89,17 +85,17 @@ export default class Carousel extends Component {
   }
 
   _filterChildren() {
-    const {children} = this.props;
+    const { children } = this.props;
 
     if (!children) {
-      throw new Error('You have to set children inside Carousel component');
+      throw new Error("You have to set children inside Carousel component");
     }
 
     // filter undefined children
     this.children = Children.toArray(children).filter((child) => child);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     this._filterChildren();
 
     // when received props it will update all views, with new props.
@@ -112,19 +108,19 @@ export default class Carousel extends Component {
   }
 
   indicatorPressed(activePage: number) {
-    this.setState({activePage});
+    this.setState({ activePage });
     this.pager.scrollToPage(activePage);
 
-    const {onPageChange} = this.props;
+    const { onPageChange } = this.props;
     if (onPageChange) {
       onPageChange(activePage);
     }
   }
 
   _resetPager() {
-    const {initialPage} = this.props;
+    const { initialPage } = this.props;
     if (initialPage > 0) {
-      this.setState({activePage: initialPage});
+      this.setState({ activePage: initialPage });
       this.pager.scrollToPage(initialPage, false);
     }
 
@@ -134,7 +130,7 @@ export default class Carousel extends Component {
   }
 
   _setUpTimer() {
-    const {animate} = this.props;
+    const { animate } = this.props;
     if (this.timer) {
       this.clearTimeout(this.timer);
     }
@@ -145,15 +141,15 @@ export default class Carousel extends Component {
   }
 
   getWidth(): number {
-    const {width} = this.props;
+    const { width } = this.props;
     if (width) {
       return width;
     }
-    return Dimensions.get('window').width;
+    return Dimensions.get("window").width;
   }
 
   _animateNextPage() {
-    let {activePage} = this.state;
+    let { activePage } = this.state;
     if (activePage < this.children.length - 1) {
       activePage++;
     } else if (this.props.loop) {
@@ -169,7 +165,7 @@ export default class Carousel extends Component {
   }
 
   _onAnimationBegin() {
-    const {onScrollBegin} = this.props;
+    const { onScrollBegin } = this.props;
     if (onScrollBegin) {
       onScrollBegin();
     }
@@ -177,27 +173,34 @@ export default class Carousel extends Component {
   }
 
   _onAnimationEnd(activePage) {
-    const {onPageChange} = this.props;
+    const { onPageChange } = this.props;
     if (onPageChange) {
       onPageChange(activePage);
     }
-    this.setState({activePage}, this._setUpTimer());
+    this.setState({ activePage }, this._setUpTimer());
   }
 
   renderPageIndicator() {
-    const {hideIndicators, indicatorOffset,
-      indicatorAtBottom, indicatorSpace,
-      indicatorColor, inactiveIndicatorColor,
-      indicatorSize, indicatorText, inactiveIndicatorText} = this.props;
-    const {activePage} = this.state;
+    const {
+      hideIndicators,
+      indicatorOffset,
+      indicatorAtBottom,
+      indicatorSpace,
+      indicatorColor,
+      inactiveIndicatorColor,
+      indicatorSize,
+      indicatorText,
+      inactiveIndicatorText,
+    } = this.props;
+    const { activePage } = this.state;
     if (hideIndicators === true) {
       return null;
     }
 
     const indicators = [];
-    const positionIndicatorStyle = indicatorAtBottom ?
-      {bottom: indicatorOffset} :
-      {top: indicatorOffset};
+    const positionIndicatorStyle = indicatorAtBottom
+      ? { bottom: indicatorOffset }
+      : { top: indicatorOffset };
     const indicatorWidth = this.children.length * indicatorSpace;
     let style;
     let position;
@@ -208,12 +211,13 @@ export default class Carousel extends Component {
     };
 
     this.children.forEach((child, i) => {
-      style = i === activePage ?
-        {color: indicatorColor} :
-        {color: inactiveIndicatorColor};
+      style =
+        i === activePage
+          ? { color: indicatorColor }
+          : { color: inactiveIndicatorColor };
       indicators.push(
         <Text
-          style={[style, {fontSize: indicatorSize}]}
+          style={[style, { fontSize: indicatorSize }]}
           key={i}
           onPress={() => this.indicatorPressed(i)}
         >
@@ -235,11 +239,11 @@ export default class Carousel extends Component {
   }
 
   render() {
-    const {height, contentContainerStyle, onScroll} = this.props;
+    const { height, contentContainerStyle, onScroll } = this.props;
     const width = this.getWidth();
     return (
-      <View style={{width}}>
-        <View style={{width, height, overflow: 'hidden'}}>
+      <View style={{ width }}>
+        <View style={{ width, height, overflow: "hidden" }}>
           <CarouselPager
             ref={(pager) => {
               this.pager = pager;
@@ -261,6 +265,6 @@ export default class Carousel extends Component {
       </View>
     );
   }
-};
+}
 
 reactMixin(Carousel.prototype, TimerMixin);
